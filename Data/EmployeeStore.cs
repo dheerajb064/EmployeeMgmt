@@ -5,7 +5,7 @@ namespace EmployeeMgmt.Data
     public class EmployeeStore
     {
         private readonly Dictionary<int, Employee> _employees;
-        private int _employeeId = 1001;
+        private int _employeeId = 1003;
         private int _leaveRequestId = 1;
         public EmployeeStore()
         {

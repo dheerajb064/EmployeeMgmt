@@ -91,7 +91,7 @@ namespace EmployeeMgmt.Controllers
             return Ok("Employee Added Successfully");
         }
 
-        [HttpPost("apply-leave")]
+        [HttpPost("leaves")]
         [Authorize(Roles = "Employee")]
         public IActionResult ApplyLeave([FromBody] LeaveApplicationDTO leaveApplicationDTO)
         {
@@ -105,12 +105,12 @@ namespace EmployeeMgmt.Controllers
         }
 
 
-        [HttpPost("approve-leave")]
+        [HttpPost("{employeeId}/leaves/{leaveId}")]
         [Authorize(Roles = "Manager")]
-        public IActionResult ApproveLeave([FromBody] LeaveApprovalDTO leaveApprovalDTO)
+        public IActionResult ApproveLeave(int employeeId ,int leaveId)
         {
             var managerId = GetCurrentUserId();
-            var success = _employeeStore.ApproveLeave(managerId, leaveApprovalDTO.EmployeeId, leaveApprovalDTO.LeaveRequestId);
+            var success = _employeeStore.ApproveLeave(managerId, employeeId, leaveId);
             if(!success)
             {
                 return BadRequest("Leave Approval Failed");
@@ -118,8 +118,17 @@ namespace EmployeeMgmt.Controllers
             return Ok("Leave Approved Successfully");
         }
 
+        [HttpPost("logout")]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync();
+            return Ok("Logged out successfully");
+        }
+
         private int GetCurrentUserId()
         {
+            
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if(userIdClaim != null && int.TryParse(userIdClaim.Value , out int userId))
             {
