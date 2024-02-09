@@ -18,6 +18,10 @@ namespace EmployeeMgmt.Data
         {
             return _employees.Values.Where(e => e.ReportingManagerId == managerId);
         }
+        public IEnumerable<Employee> GetAllEmployees()
+        {
+            return _employees.Values.ToList();
+        }
         public Employee? GetEmployeeById(int id)
         {
             _employees.TryGetValue(id, out Employee? emp);
@@ -52,6 +56,7 @@ namespace EmployeeMgmt.Data
         public bool ApproveLeave(int managerId , int employeeId , int leaveRequestId)
         {
             var employee = _employees[employeeId];
+            if(employee == null) return false;
             var leaveRequest = employee.LeaveRequests.Find(lr => lr.LeaveRequestId == leaveRequestId);
             if(leaveRequest == null)
             {
